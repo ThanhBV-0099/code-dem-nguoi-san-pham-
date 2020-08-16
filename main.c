@@ -132,7 +132,7 @@ void sosanh()
 	}
 	else
 	{
-		if(ra!=0 && vao!=0)
+		if(ra!=0 || vao!=0)
 		{
 		vao=ra=0;
 		out_pin4(0);
