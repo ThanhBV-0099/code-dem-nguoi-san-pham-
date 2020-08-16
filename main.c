@@ -21,7 +21,6 @@
 /* Includes ------------------------------------------------------------------*/
 #include "main.h"
 #include "adc.h"
-#include "dma.h"
 #include "gpio.h"
 
 /* Private includes ----------------------------------------------------------*/
@@ -87,27 +86,29 @@ void cb1()
 		//	HAL_GPIO_TogglePin(GPIOA, GPIO_PIN_4);
 		}
 		}
-	 if (HAL_GPIO_ReadPin(GPIOA, GPIO_PIN_3)== 0 && t2==1) 
+	 else if (HAL_GPIO_ReadPin(GPIOA, GPIO_PIN_3)== 0 && t2==1) 
 	 {
 		 while (HAL_GPIO_ReadPin(GPIOA, GPIO_PIN_3)==0); 
 		 {
 			 vao++;
-			 t2=0;
+			 HAL_Delay(20);
+			 t2=0;t1=0;
 		 }
 	 }
-	 if (HAL_GPIO_ReadPin(GPIOA, GPIO_PIN_3)== 0 && t2==0) 
+	 else if (HAL_GPIO_ReadPin(GPIOA, GPIO_PIN_3)== 0 && t2==0) 
 	 {
 		 while (HAL_GPIO_ReadPin(GPIOA, GPIO_PIN_3)==0); 
 		 {
 			 t1=1;
 		 }
 	 }
-	 if (HAL_GPIO_ReadPin(GPIOA, GPIO_PIN_2)== 0 && t1==1) // if the pin is HIGH 
+	 else if (HAL_GPIO_ReadPin(GPIOA, GPIO_PIN_2)== 0 && t1==1) // if the pin is HIGH 
   { 
 		 while (HAL_GPIO_ReadPin(GPIOA, GPIO_PIN_2)==0); //wait for pin to go low 
 		{
 			ra++;
-			t1=0;
+			HAL_Delay(20);
+			t1=0;t2=0;
 		}
 	}
 }
@@ -148,7 +149,6 @@ int main(void)
 
   /* Initialize all configured peripherals */
   MX_GPIO_Init();
-  MX_DMA_Init();
   MX_ADC1_Init();
 	HAL_GPIO_WritePin (GPIOA, GPIO_PIN_4,0);
   /* USER CODE BEGIN 2 */
