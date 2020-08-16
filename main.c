@@ -111,6 +111,18 @@ void cb1()
 			t1=0;t2=0;
 		}
 	}
+	  if (HAL_GPIO_ReadPin(GPIOA, GPIO_PIN_6)== 0 ) // if the pin is HIGH 
+  { 
+		HAL_Delay(5);
+		 while (HAL_GPIO_ReadPin(GPIOA, GPIO_PIN_6)==0); //wait for pin to go low 
+		{
+			vao=ra=0;
+			HAL_Delay(5);
+			HAL_GPIO_TogglePin(GPIOA, GPIO_PIN_4);
+			//out_pin4(1);
+			
+		}
+	}
 }
 void sosanh()
 {
@@ -120,9 +132,12 @@ void sosanh()
 	}
 	else
 	{
+		if(ra!=0 && vao!=0)
+		{
 		vao=ra=0;
 		out_pin4(0);
 	}
+}
 }
 int main(void)
 {
@@ -164,7 +179,7 @@ int main(void)
   while (1)
   {
 	cb1();
-		sosanh();
+	sosanh();
 	}
 }
     /* USER CODE END WHIL */
