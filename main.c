@@ -31,7 +31,9 @@
 /* Private typedef -----------------------------------------------------------*/
 /* USER CODE BEGIN PTD */
 uint32_t adc_value;
-uint16_t t1=0,t2=0,d1=0,d2=0,vao=0,ra=0;
+uint16_t t=0,t1=0,t2=0,i=0;
+uint16_t vao=0,ra=0;
+uint16_t t3=0;
 /* USER CODE END PTD */
 
 /* Private define ------------------------------------------------------------*/
@@ -39,6 +41,8 @@ uint16_t t1=0,t2=0,d1=0,d2=0,vao=0,ra=0;
 #define GPIO_PIN_RESET 0
 #define GPIO_PIN_SET 1
 #define  out_pin4(x) HAL_GPIO_WritePin (GPIOA, GPIO_PIN_4, x);
+//#define in_pin6 HAL_GPIO_ReadPin(GPIOA, GPIO_PIN_6);
+#define daott4 HAL_GPIO_TogglePin(GPIOA, GPIO_PIN_4);
 /* USER CODE END PD */
 
 /* Private macro -------------------------------------------------------------*/
@@ -54,27 +58,16 @@ uint16_t t1=0,t2=0,d1=0,d2=0,vao=0,ra=0;
 
 /* Private function prototypes -----------------------------------------------*/
 void SystemClock_Config(void);
-void cb1();
+void sensor_init(void);
 void sosanh();
+void nutnhan();
+void docnn();
 /* USER CODE BEGIN PFP */
-
 /* USER CODE END PFP */
 
 /* Private user code ---------------------------------------------------------*/
 /* USER CODE BEGIN 0 */
-
-/* USER CODE END 0 */
-
-/**
-  * @brief  The application entry point.
-  * @retval int
-  */
-
-//	void HAL_ADC_ConvCpltCallback(ADC_HandleTypeDef* hadc)	
-//	{
-//		adc_value=HAL_ADC_GetValue(&hadc1);
-//	}
-void cb1()
+void sensor_init(void)
 {
 	  if (HAL_GPIO_ReadPin(GPIOA, GPIO_PIN_2)== 0 && t1==0) // if the pin is HIGH 
   { 
@@ -95,6 +88,7 @@ void cb1()
 			 t2=0;t1=0;
 		 }
 	 }
+	 
 	 else if (HAL_GPIO_ReadPin(GPIOA, GPIO_PIN_3)== 0 && t2==0) 
 	 {
 		 while (HAL_GPIO_ReadPin(GPIOA, GPIO_PIN_3)==0); 
@@ -111,34 +105,65 @@ void cb1()
 			t1=0;t2=0;
 		}
 	}
-	  if (HAL_GPIO_ReadPin(GPIOA, GPIO_PIN_6)== 0 ) // if the pin is HIGH 
+//	  if (HAL_GPIO_ReadPin(GPIOA, GPIO_PIN_6)== 0 ) // if the pin is HIGH 
+//  { 
+//		HAL_Delay(5);
+//		 while (HAL_GPIO_ReadPin(GPIOA, GPIO_PIN_6)==0); //wait for pin to go low 
+//		{
+//			vao=ra;
+//			HAL_Delay(5);
+//			HAL_GPIO_TogglePin(GPIOA, GPIO_PIN_4);
+//			//out_pin4(1);
+//			
+//		}
+//	}
+	
+}
+void nutnhan()
+{
+		  if (HAL_GPIO_ReadPin(GPIOA, GPIO_PIN_6) == 0 ) 
   { 
 		HAL_Delay(5);
-		 while (HAL_GPIO_ReadPin(GPIOA, GPIO_PIN_6)==0); //wait for pin to go low 
+		 while (HAL_GPIO_ReadPin(GPIOA, GPIO_PIN_6) == 0); 
 		{
-			vao=ra=0;
 			HAL_Delay(5);
-			HAL_GPIO_TogglePin(GPIOA, GPIO_PIN_4);
-			//out_pin4(1);
-			
+			t3=~t3;
 		}
 	}
 }
 void sosanh()
 {
-	if(vao>ra)
+if(vao>ra)
+{
+	if (t3==65535)
 	{
-	out_pin4(1);
-	}
-	else
-	{
-		if(ra!=0 || vao!=0)
-		{
-		vao=ra=0;
 		out_pin4(0);
 	}
+	else 
+	{
+		out_pin4(1);
+	}
+}
+else
+{
+	if (t3==65535)
+	{
+		out_pin4(1);
+	}
+	else 
+	{
+		out_pin4(0);
+	}
+	ra=vao=0;
 }
 }
+
+/* USER CODE END 0 */
+
+/**
+  * @brief  The application entry point.
+  * @retval int
+  */
 int main(void)
 {
   /* USER CODE BEGIN 1 */
@@ -165,7 +190,6 @@ int main(void)
   /* Initialize all configured peripherals */
   MX_GPIO_Init();
   MX_ADC1_Init();
-	HAL_GPIO_WritePin (GPIOA, GPIO_PIN_4,0);
   /* USER CODE BEGIN 2 */
 // kl();
 // lcd_goto_XY(1,1);
@@ -173,34 +197,21 @@ int main(void)
 // HAL_ADC_Start_IT(&hadc1);
 //HAL_ADC_Start_DMA(&hadc1,&adc_value,1);
   /* USER CODE END 2 */
-
+t3=0;
   /* Infinite loop */
   /* USER CODE BEGIN WHILE */
   while (1)
   {
-	cb1();
-	sosanh();
-	}
-}
-    /* USER CODE END WHIL */
-//if(HAL_GPIO_ReadPin(GPIOA,GPIO_PIN_2))
-//{
-//	HAL_GPIO_WritePin(GPIOA,GPIO_PIN_4,GPIO_PIN_SET);
-//		while(HAL_GPIO_ReadPin(GPIOA,GPIO_PIN_2));
-//{
-//	HAL_GPIO_WritePin(GPIOA,GPIO_PIN_4,GPIO_PIN_RESET);
-//}
-//else
-//{
-//	HAL_GPIO_WritePin(GPIOA,GPIO_PIN_4,GPIO_PIN_RESET);
-//}
-	
-//		HAL_Delay(1);
-//HAL_ADC_Stop_DMA(&hadc1);
-/* USER CODE BEGIN 3 */
-  
+    /* USER CODE END WHILE */
+		//nutnhan();
+		
+		sensor_init();
+		sosanh();
+		nutnhan();
+    /* USER CODE BEGIN 3 */
+  }
   /* USER CODE END 3 */
-
+}
 
 /**
   * @brief System Clock Configuration
@@ -214,13 +225,12 @@ void SystemClock_Config(void)
 
   /** Initializes the CPU, AHB and APB busses clocks 
   */
-  RCC_OscInitStruct.OscillatorType = RCC_OSCILLATORTYPE_HSE;
-  RCC_OscInitStruct.HSEState = RCC_HSE_ON;
-  RCC_OscInitStruct.HSEPredivValue = RCC_HSE_PREDIV_DIV1;
+  RCC_OscInitStruct.OscillatorType = RCC_OSCILLATORTYPE_HSI;
   RCC_OscInitStruct.HSIState = RCC_HSI_ON;
+  RCC_OscInitStruct.HSICalibrationValue = RCC_HSICALIBRATION_DEFAULT;
   RCC_OscInitStruct.PLL.PLLState = RCC_PLL_ON;
-  RCC_OscInitStruct.PLL.PLLSource = RCC_PLLSOURCE_HSE;
-  RCC_OscInitStruct.PLL.PLLMUL = RCC_PLL_MUL9;
+  RCC_OscInitStruct.PLL.PLLSource = RCC_PLLSOURCE_HSI_DIV2;
+  RCC_OscInitStruct.PLL.PLLMUL = RCC_PLL_MUL2;
   if (HAL_RCC_OscConfig(&RCC_OscInitStruct) != HAL_OK)
   {
     Error_Handler();
@@ -231,15 +241,15 @@ void SystemClock_Config(void)
                               |RCC_CLOCKTYPE_PCLK1|RCC_CLOCKTYPE_PCLK2;
   RCC_ClkInitStruct.SYSCLKSource = RCC_SYSCLKSOURCE_PLLCLK;
   RCC_ClkInitStruct.AHBCLKDivider = RCC_SYSCLK_DIV1;
-  RCC_ClkInitStruct.APB1CLKDivider = RCC_HCLK_DIV2;
+  RCC_ClkInitStruct.APB1CLKDivider = RCC_HCLK_DIV1;
   RCC_ClkInitStruct.APB2CLKDivider = RCC_HCLK_DIV1;
 
-  if (HAL_RCC_ClockConfig(&RCC_ClkInitStruct, FLASH_LATENCY_2) != HAL_OK)
+  if (HAL_RCC_ClockConfig(&RCC_ClkInitStruct, FLASH_LATENCY_0) != HAL_OK)
   {
     Error_Handler();
   }
   PeriphClkInit.PeriphClockSelection = RCC_PERIPHCLK_ADC;
-  PeriphClkInit.AdcClockSelection = RCC_ADCPCLK2_DIV6;
+  PeriphClkInit.AdcClockSelection = RCC_ADCPCLK2_DIV2;
   if (HAL_RCCEx_PeriphCLKConfig(&PeriphClkInit) != HAL_OK)
   {
     Error_Handler();
