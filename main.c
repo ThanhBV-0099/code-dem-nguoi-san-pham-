@@ -33,7 +33,7 @@
 uint32_t adc_value;
 uint16_t t=0,t1=0,t2=0,i=0;
 uint16_t vao=0,ra=0;
-uint16_t t3=0;
+uint16_t t3=0,ss_vao=0,ss_nut=0;
 /* USER CODE END PTD */
 
 /* Private define ------------------------------------------------------------*/
@@ -84,6 +84,7 @@ void sensor_init(void)
 		 while (HAL_GPIO_ReadPin(GPIOA, GPIO_PIN_3)==0); 
 		 {
 			 vao++;
+			 ss_vao++;
 			 HAL_Delay(20);
 			 t2=0;t1=0;
 		 }
@@ -128,6 +129,7 @@ void nutnhan()
 		{
 			HAL_Delay(5);
 			t3=~t3;
+			ss_nut++;
 		}
 	}
 }
@@ -135,13 +137,29 @@ void sosanh()
 {
 if(vao>ra)
 {
-	if (t3==65535)
+	if (ss_vao>ss_nut)
 	{
-		out_pin4(0);
+		if(t3==65535)
+		{
+			out_pin4(0);
+		}
+		else
+		{
+		out_pin4(1);
+		}
+		ss_vao=ss_nut=0;
 	}
 	else 
 	{
-		out_pin4(1);
+		if(t3==65535)
+		{
+			out_pin4(1);
+		}
+		else
+		{
+		out_pin4(0);
+		}
+		ss_vao=ss_nut=0;
 	}
 }
 else
