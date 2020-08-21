@@ -128,53 +128,156 @@ void nutnhan()
 		 while (HAL_GPIO_ReadPin(GPIOA, GPIO_PIN_6) == 0); 
 		{
 			HAL_Delay(5);
-			t3=~t3;
+		//	t3=~t3;
 			ss_nut++;
+			
 		}
 	}
 }
 void sosanh()
 {
-if(vao>ra)
-{
-	if (ss_vao>ss_nut)
+	for(i=0;i<2;i++)
 	{
-		if(t3==65535)
+	if(i==1)
+	{
+	if(vao==ra && vao==0 && ra==0)
+	{	
+			  if (HAL_GPIO_ReadPin(GPIOA, GPIO_PIN_6) == 0 ) 
+  { 
+		HAL_Delay(5);
+		 while (HAL_GPIO_ReadPin(GPIOA, GPIO_PIN_6) == 0); 
 		{
-			out_pin4(0);
+			
+			HAL_GPIO_TogglePin(GPIOA, GPIO_PIN_4);
+			HAL_Delay(2);
+				break;
 		}
-		else
-		{
-		out_pin4(1);
-		}
-		ss_vao=ss_nut=0;
 	}
-	else 
+}
+	else if(vao==ra && vao!=0 && ra!=0)
 	{
-		if(t3==65535)
+		out_pin4(0);
+		vao=ra=0;
+		break;
+	}
+	else if(vao>ra)
+	{
+		  if (HAL_GPIO_ReadPin(GPIOA, GPIO_PIN_6) == 0 ) 
+  { 
+		HAL_Delay(1);
+		 while (HAL_GPIO_ReadPin(GPIOA, GPIO_PIN_6) == 0); 
 		{
+			t=1;
+			t3++;
+			if(t3>1)
+			{
+				t3=0;
+			}
+			HAL_GPIO_TogglePin(GPIOA, GPIO_PIN_4);
+			//t=0;
+			//	out_pin4(0);
+			HAL_Delay(2);
+				break;
+			}
+	}
+	else if (HAL_GPIO_ReadPin(GPIOA, GPIO_PIN_6) == 1 && t3==0 && t==0) 
+  { 
+//		HAL_Delay(5);
+//		 while (HAL_GPIO_ReadPin(GPIOA, GPIO_PIN_6) == 0); 
+		{
+			
 			out_pin4(1);
+			HAL_Delay(2);
+			t3=0;
+				break;
 		}
-		else
+	}
+	else if (HAL_GPIO_ReadPin(GPIOA, GPIO_PIN_6) == 1 && t3==1 && t==1) 
+  { 
+//		HAL_Delay(5);
+//		 while (HAL_GPIO_ReadPin(GPIOA, GPIO_PIN_6) == 0); 
 		{
-		out_pin4(0);
+			
+			out_pin4(1);
+			HAL_Delay(2);
+			//t3=0;
+				break;
 		}
-		ss_vao=ss_nut=0;
 	}
-}
-else
-{
-	if (t3==65535)
-	{
-		out_pin4(1);
 	}
-	else 
+	else if (ra>vao)
 	{
 		out_pin4(0);
+		vao=ra=0;
+		break;
 	}
-	ra=vao=0;
+	}
 }
-}
+	}
+	
+//	}
+//	else if(t3==0)
+//	{
+//		HAL_Delay(1);
+//		out_pin4(0);
+//		break;
+//	}
+//	}
+//	else if(vao>ra)
+//	{
+//		if(t3==65535)
+//	{
+//		HAL_Delay(1);
+//		out_pin4(0);
+//		break;
+//	}
+//	else if(t3==0)
+//	{
+//		HAL_Delay(1);
+//		out_pin4(1);
+//		break;
+//	}
+//	}
+//	else 
+//	{
+//			out_pin4(0);
+//		vao=ra=0;
+//		break;
+//	}
+//}
+
+
+	
+//}
+//	else if(vao>ra)
+//	{
+//		if(t3==65535)
+//	{
+//		if(HAL_GPIO_ReadPin(GPIOA, GPIO_PIN_4)==1)
+//		{
+//			out_pin4(0);
+//		//	break;
+//		}
+//		else //if (HAL_GPIO_ReadPin(GPIOA, GPIO_PIN_4)==0)
+//		{
+//		out_pin4(1);
+//	//	break;
+//	}
+//}
+//		else if(t3==0)
+//	{
+//		HAL_Delay(1);
+//		out_pin4(1);
+//		break;
+//	}
+//	}
+	
+
+	
+
+//	i=0;
+//}
+//	}
 
 /* USER CODE END 0 */
 
@@ -221,11 +324,9 @@ t3=0;
   while (1)
   {
     /* USER CODE END WHILE */
-		//nutnhan();
-		
 		sensor_init();
 		sosanh();
-		nutnhan();
+	//	nutnhan();
     /* USER CODE BEGIN 3 */
   }
   /* USER CODE END 3 */
