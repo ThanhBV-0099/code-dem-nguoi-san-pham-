@@ -85,7 +85,7 @@ void sensor_init(void)
 		 {
 			 vao++;
 			 ss_vao++;
-			 HAL_Delay(20);
+			 HAL_Delay(5);
 			 t2=0;t1=0;
 		 }
 	 }
@@ -102,7 +102,7 @@ void sensor_init(void)
 		 while (HAL_GPIO_ReadPin(GPIOA, GPIO_PIN_2)==0); //wait for pin to go low 
 		{
 			ra++;
-			HAL_Delay(20);
+			HAL_Delay(5);
 			t1=0;t2=0;
 		}
 	}
