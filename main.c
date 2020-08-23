@@ -30,7 +30,7 @@
 
 /* Private typedef -----------------------------------------------------------*/
 /* USER CODE BEGIN PTD */
-uint32_t adc_value;
+uint32_t dem=0;
 uint16_t t=0,t1=0,t2=0,i=0;
 uint16_t vao=0,ra=0;
 uint16_t t3=0,ss_vao=0,ss_nut=0;
@@ -149,7 +149,6 @@ void sosanh()
 		{
 			
 			HAL_GPIO_TogglePin(GPIOA, GPIO_PIN_4);
-			HAL_Delay(2);
 				break;
 		}
 	}
@@ -164,46 +163,34 @@ void sosanh()
 	{
 		  if (HAL_GPIO_ReadPin(GPIOA, GPIO_PIN_6) == 0 ) 
   { 
-		HAL_Delay(1);
+		HAL_Delay(5);
 		 while (HAL_GPIO_ReadPin(GPIOA, GPIO_PIN_6) == 0); 
 		{
-			t=1;
-			t3++;
-			if(t3>1)
+			dem++;
+			if(dem>1)
 			{
-				t3=0;
+				dem=0;
 			}
-			HAL_GPIO_TogglePin(GPIOA, GPIO_PIN_4);
-			//t=0;
-			//	out_pin4(0);
-			HAL_Delay(2);
-				break;
-			}
+		if(dem==1)
+	{
+		out_pin4(0);
 	}
-	else if (HAL_GPIO_ReadPin(GPIOA, GPIO_PIN_6) == 1 && t3==0 && t==0) 
-  { 
-//		HAL_Delay(5);
-//		 while (HAL_GPIO_ReadPin(GPIOA, GPIO_PIN_6) == 0); 
-		{
-			
-			out_pin4(1);
-			HAL_Delay(2);
-			t3=0;
-				break;
-		}
+		else if(dem==0)
+	{
+		out_pin4(1);
 	}
-	else if (HAL_GPIO_ReadPin(GPIOA, GPIO_PIN_6) == 1 && t3==1 && t==1) 
-  { 
-//		HAL_Delay(5);
-//		 while (HAL_GPIO_ReadPin(GPIOA, GPIO_PIN_6) == 0); 
-		{
-			
-			out_pin4(1);
-			HAL_Delay(2);
-			//t3=0;
-				break;
-		}
+
+			break;
 	}
+		dem=0;
+}
+	
+else if (HAL_GPIO_ReadPin(GPIOA, GPIO_PIN_6) == 1 && dem==0) 
+{
+	out_pin4(1);
+	break;
+}
+	
 	}
 	else if (ra>vao)
 	{
@@ -215,69 +202,6 @@ void sosanh()
 }
 	}
 	
-//	}
-//	else if(t3==0)
-//	{
-//		HAL_Delay(1);
-//		out_pin4(0);
-//		break;
-//	}
-//	}
-//	else if(vao>ra)
-//	{
-//		if(t3==65535)
-//	{
-//		HAL_Delay(1);
-//		out_pin4(0);
-//		break;
-//	}
-//	else if(t3==0)
-//	{
-//		HAL_Delay(1);
-//		out_pin4(1);
-//		break;
-//	}
-//	}
-//	else 
-//	{
-//			out_pin4(0);
-//		vao=ra=0;
-//		break;
-//	}
-//}
-
-
-	
-//}
-//	else if(vao>ra)
-//	{
-//		if(t3==65535)
-//	{
-//		if(HAL_GPIO_ReadPin(GPIOA, GPIO_PIN_4)==1)
-//		{
-//			out_pin4(0);
-//		//	break;
-//		}
-//		else //if (HAL_GPIO_ReadPin(GPIOA, GPIO_PIN_4)==0)
-//		{
-//		out_pin4(1);
-//	//	break;
-//	}
-//}
-//		else if(t3==0)
-//	{
-//		HAL_Delay(1);
-//		out_pin4(1);
-//		break;
-//	}
-//	}
-	
-
-	
-
-//	i=0;
-//}
-//	}
 
 /* USER CODE END 0 */
 
