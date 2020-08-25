@@ -20,7 +20,6 @@
 
 /* Includes ------------------------------------------------------------------*/
 #include "main.h"
-#include "adc.h"
 #include "gpio.h"
 
 /* Private includes ----------------------------------------------------------*/
@@ -30,10 +29,11 @@
 
 /* Private typedef -----------------------------------------------------------*/
 /* USER CODE BEGIN PTD */
-uint32_t dem=0;
-uint16_t t=0,t1=0,t2=0,i=0;
+uint32_t adc_value;
+uint16_t dem=0;
+uint16_t t=0,t1=0,t2=0,i=0,a=0;
 uint16_t vao=0,ra=0;
-uint16_t t3=0,ss_vao=0,ss_nut=0;
+uint16_t t3=0,ss_vao=0,ss_nut=0,phanbiet=0,phanbiet1=0,lap=0,run=0;
 /* USER CODE END PTD */
 
 /* Private define ------------------------------------------------------------*/
@@ -58,25 +58,68 @@ uint16_t t3=0,ss_vao=0,ss_nut=0;
 
 /* Private function prototypes -----------------------------------------------*/
 void SystemClock_Config(void);
+/* USER CODE BEGIN PFP */
+void SystemClock_Config(void);
 void sensor_init(void);
 void sosanh();
-void nutnhan();
+void kiemtranutnhan();
 void docnn();
-/* USER CODE BEGIN PFP */
 /* USER CODE END PFP */
 
 /* Private user code ---------------------------------------------------------*/
 /* USER CODE BEGIN 0 */
-void sensor_init(void)
+
+/* USER CODE END 0 */
+
+void kiemtranutnhan()
 {
+		//dem=0;
+//		lap=0;
+	//if(vao==ra || vao>ra || vao<ra)
+	{
+	if(HAL_GPIO_ReadPin(GPIOA, GPIO_PIN_6) == 0 ) 
+	//while(HAL_GPIO_ReadPin(GPIOA, GPIO_PIN_6) == 1 ) ;
+  {
+		dem=0;
+	//	lap=0;
+		do
+			{
+			dem++;
+			HAL_Delay(50);	
+			}
+			while((dem<5)&& (HAL_GPIO_ReadPin(GPIOA, GPIO_PIN_6) == 0 ));
+		 if(dem>=5)
+		 {
+			 vao=ra=0;
+			 dem=0;
+			for(lap=0;lap<10;lap++)
+			{
+			HAL_GPIO_TogglePin(GPIOC, GPIO_PIN_13);
+			HAL_Delay(10);
+			}
+			
+			while(HAL_GPIO_ReadPin(GPIOA, GPIO_PIN_6) == 0 );
+		}
+		 else 
+		 {
+				dem=0;
+			 
+		 }
+//			break;
+//		//	 HAL_GPIO_TogglePin(GPIOA, GPIO_PIN_4);
+//}
+}
+	}
+}
+	
+	void sensor_init(void)
+{
+	//kiemtranutnhan();
 	  if (HAL_GPIO_ReadPin(GPIOA, GPIO_PIN_2)== 0 && t1==0) // if the pin is HIGH 
   { 
-		 //HAL_Delay (20); 
 		 while (HAL_GPIO_ReadPin(GPIOA, GPIO_PIN_2)==0); //wait for pin to go low 
 		{
   t2=1;
-   //HAL_GPIO_WritePin (GPIOA, GPIO_PIN_4, 1); // LED OFF 
-		//	HAL_GPIO_TogglePin(GPIOA, GPIO_PIN_4);
 		}
 		}
 	 else if (HAL_GPIO_ReadPin(GPIOA, GPIO_PIN_3)== 0 && t2==1) 
@@ -84,12 +127,12 @@ void sensor_init(void)
 		 while (HAL_GPIO_ReadPin(GPIOA, GPIO_PIN_3)==0); 
 		 {
 			 vao++;
-			 ss_vao++;
 			 HAL_Delay(5);
 			 t2=0;t1=0;
+			 phanbiet=1;
 		 }
 	 }
-	 
+
 	 else if (HAL_GPIO_ReadPin(GPIOA, GPIO_PIN_3)== 0 && t2==0) 
 	 {
 		 while (HAL_GPIO_ReadPin(GPIOA, GPIO_PIN_3)==0); 
@@ -106,53 +149,32 @@ void sensor_init(void)
 			t1=0;t2=0;
 		}
 	}
-//	  if (HAL_GPIO_ReadPin(GPIOA, GPIO_PIN_6)== 0 ) // if the pin is HIGH 
-//  { 
-//		HAL_Delay(5);
-//		 while (HAL_GPIO_ReadPin(GPIOA, GPIO_PIN_6)==0); //wait for pin to go low 
-//		{
-//			vao=ra;
-//			HAL_Delay(5);
-//			HAL_GPIO_TogglePin(GPIOA, GPIO_PIN_4);
-//			//out_pin4(1);
-//			
-//		}
-//	}
-	
 }
-void nutnhan()
-{
-		  if (HAL_GPIO_ReadPin(GPIOA, GPIO_PIN_6) == 0 ) 
-  { 
-		HAL_Delay(5);
-		 while (HAL_GPIO_ReadPin(GPIOA, GPIO_PIN_6) == 0); 
-		{
-			HAL_Delay(5);
-		//	t3=~t3;
-			ss_nut++;
-			
-		}
-	}
-}
+
 void sosanh()
 {
+	//kiemtranutnhan();
 	for(i=0;i<2;i++)
 	{
-	if(i==1)
+	if(i==0 ||i==1 ||i==2 )
 	{
 	if(vao==ra && vao==0 && ra==0)
 	{	
+		
+		{
 			  if (HAL_GPIO_ReadPin(GPIOA, GPIO_PIN_6) == 0 ) 
   { 
-		HAL_Delay(5);
+		HAL_Delay(2);
 		 while (HAL_GPIO_ReadPin(GPIOA, GPIO_PIN_6) == 0); 
 		{
-			
+
 			HAL_GPIO_TogglePin(GPIOA, GPIO_PIN_4);
+			HAL_Delay(2);
 				break;
 		}
 	}
 }
+		}
 	else if(vao==ra && vao!=0 && ra!=0)
 	{
 		out_pin4(0);
@@ -161,47 +183,34 @@ void sosanh()
 	}
 	else if(vao>ra)
 	{
-		  if (HAL_GPIO_ReadPin(GPIOA, GPIO_PIN_6) == 0 ) 
+		  if (HAL_GPIO_ReadPin(GPIOA, GPIO_PIN_6) == 0 )   // nhan nut lan 1,3,5,... dao trang thai out
   { 
-		HAL_Delay(5);
+		HAL_Delay(2);
 		 while (HAL_GPIO_ReadPin(GPIOA, GPIO_PIN_6) == 0); 
-		{
-			dem++;
-			if(dem>1)
-			{
-				dem=0;
-			}
-		if(dem==1)
-	{
-		out_pin4(0);
-	}
-		else if(dem==0)
-	{
-		out_pin4(1);
-	}
-
+		{ 
+			phanbiet=0;
+			HAL_GPIO_TogglePin(GPIOA, GPIO_PIN_4);
+			HAL_Delay(2);
 			break;
 	}
-		dem=0;
-}
-	
-else if (HAL_GPIO_ReadPin(GPIOA, GPIO_PIN_6) == 1 && dem==0) 
-{
-	out_pin4(1);
-	break;
-}
-	
 	}
+	else if(phanbiet==1)  // chua nhan nut
+	{
+	out_pin4(1);
+	break;		
+	}
+}
 	else if (ra>vao)
 	{
 		out_pin4(0);
 		vao=ra=0;
 		break;
 	}
+	
 	}
 }
-	}
-	
+}
+
 
 /* USER CODE END 0 */
 
@@ -212,29 +221,19 @@ else if (HAL_GPIO_ReadPin(GPIOA, GPIO_PIN_6) == 1 && dem==0)
 int main(void)
 {
   /* USER CODE BEGIN 1 */
-
   /* USER CODE END 1 */
-  
 
   /* MCU Configuration--------------------------------------------------------*/
-
   /* Reset of all peripherals, Initializes the Flash interface and the Systick. */
   HAL_Init();
-
   /* USER CODE BEGIN Init */
-
   /* USER CODE END Init */
-
   /* Configure the system clock */
   SystemClock_Config();
-
   /* USER CODE BEGIN SysInit */
-
   /* USER CODE END SysInit */
-
   /* Initialize all configured peripherals */
   MX_GPIO_Init();
-  MX_ADC1_Init();
   /* USER CODE BEGIN 2 */
 // kl();
 // lcd_goto_XY(1,1);
@@ -243,28 +242,27 @@ int main(void)
 //HAL_ADC_Start_DMA(&hadc1,&adc_value,1);
   /* USER CODE END 2 */
 t3=0;
+phanbiet=0;
+out_pin4(0);
+HAL_GPIO_WritePin (GPIOC, GPIO_PIN_13, 1);
   /* Infinite loop */
   /* USER CODE BEGIN WHILE */
   while (1)
   {
     /* USER CODE END WHILE */
+	//	kiemtranutnhan();
 		sensor_init();
+		//kiemtranutnhan();
 		sosanh();
-	//	nutnhan();
+		
     /* USER CODE BEGIN 3 */
   }
   /* USER CODE END 3 */
 }
-
-/**
-  * @brief System Clock Configuration
-  * @retval None
-  */
 void SystemClock_Config(void)
 {
   RCC_OscInitTypeDef RCC_OscInitStruct = {0};
   RCC_ClkInitTypeDef RCC_ClkInitStruct = {0};
-  RCC_PeriphCLKInitTypeDef PeriphClkInit = {0};
 
   /** Initializes the CPU, AHB and APB busses clocks 
   */
@@ -288,12 +286,6 @@ void SystemClock_Config(void)
   RCC_ClkInitStruct.APB2CLKDivider = RCC_HCLK_DIV1;
 
   if (HAL_RCC_ClockConfig(&RCC_ClkInitStruct, FLASH_LATENCY_0) != HAL_OK)
-  {
-    Error_Handler();
-  }
-  PeriphClkInit.PeriphClockSelection = RCC_PERIPHCLK_ADC;
-  PeriphClkInit.AdcClockSelection = RCC_ADCPCLK2_DIV2;
-  if (HAL_RCCEx_PeriphCLKConfig(&PeriphClkInit) != HAL_OK)
   {
     Error_Handler();
   }
